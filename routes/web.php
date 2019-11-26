@@ -69,3 +69,27 @@ Route::post('/get/token', function (\Illuminate\Http\Request $request) use (
 
     return json_decode($response->getBody(), true);
 });
+
+// 刷新token
+Route::view('/refresh', 'auth.refresh');
+
+
+Route::post('/refresh', function (\Illuminate\Http\Request $request) use (
+    $clientId,
+    $clientSecret
+    ) {
+
+    $http = new GuzzleHttp\Client;
+
+    // 發送http請求
+    $response = (new \GuzzleHttp\Client())->post('http://localhost:9988/oauth/token', [
+        'form_params' => [
+            'grant_type' => 'refresh_token',
+            'refresh_token' => $request->params['refresh_token'],
+            'client_id' => $clientId,
+            'client_secret' => $clientSecret
+        ]
+    ]);
+
+    return json_decode($response->getBody(), true);
+});
