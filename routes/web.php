@@ -37,3 +37,6 @@ Route::get('lishen/login',
 
         return redirect('http://localhost:9988/oauth/authorize?'.$query);
 });
+
+// 回調地址 獲取code 隨後發出獲取token請求
+Route::view('auth/callback', 'auth.callback');
