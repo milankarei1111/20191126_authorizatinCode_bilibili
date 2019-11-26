@@ -1,7 +1,8 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
+     // 獲取url中 "?"字符後的字串
     function GetRequest() {
-        var url = location.search; // 獲取url中 "?"字符後的字串
+        var url = location.search;
         var theRequest = {};
         if(url.indexOf("?") !== -1){
             var str = url.substr(1);
@@ -23,15 +24,13 @@
         // 獲得授權後則請求令牌
         var code = Request['code'];
         var state = Request['state'];
-
-        axios.post('', {
+        axios.post('/get/token', {
             params: {
                 code,
                 state
             }
         })
-
-            .then(function(response){
+            .then(function (response){
                 console.log(response.data);
             });
     }
