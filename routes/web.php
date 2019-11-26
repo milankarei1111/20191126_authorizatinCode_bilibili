@@ -40,3 +40,32 @@ Route::get('lishen/login',
 
 // 回調地址 獲取code 隨後發出獲取token請求
 Route::view('auth/callback', 'auth.callback');
+
+// 獲取token
+Route::post('/get/token', function (\Illuminate\Http\Request $request) use (
+    $clientId,
+    $clientSecret
+    ) {
+
+    // csrf 攻擊處理
+    $state = $request->session()->pull('state'); // pull 方法從 Session 檢索並删除项目
+
+    // 驗證state
+    throw_unless(
+        strlen('state') > 0 && $state === $request->params['state'],
+        InvalidArgumentException::class
+    );
+
+    // 發送http請求
+    $response = (new \GuzzleHttp\Client())->post('http://localhost:9988/oauth/token', [
+        'form_params' => [
+            'grant_type' => 'authorization_code',
+            'client_id' => $clientId,
+            'client_secret' => $clientSecret,
+            'redirect_uri' => 'http://localhost:9987/auth/callback',
+            'code' => $request->params['code'],
+        ]
+    ]);
+
+    return json_decode($response->getBody(), true);
+});
